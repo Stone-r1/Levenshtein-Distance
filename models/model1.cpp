@@ -2,8 +2,9 @@
 #include <string>
 #include <algorithm>
 
+#include "model.h"
 
-class Model1 {
+class Model1 : public IModel {
 private:
     std::string userInput;
     std::vector<std::vector<int>> matrix;
@@ -28,7 +29,7 @@ public:
     }
     
     // O(n*m)
-    int computeDistance(const std::string& dictionaryWord) {
+    int computeDistance(const std::string& dictionaryWord) override {
         fillBaseCaseMatrix(this->userInput.size(), dictionaryWord.size());
         
         for (int i = 1; i <= this->userInput.size(); i++) {

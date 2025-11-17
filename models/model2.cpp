@@ -2,7 +2,9 @@
 #include <string>
 #include <algorithm>
 
-class Model2 {
+#include "model.h"
+
+class Model2 : public IModel {
 private:
     std::string userInput;
     std::vector<int> grid;
@@ -43,7 +45,7 @@ public:
     }
     
     // O(n*m)
-    int computeDistance(const std::string& dictionaryWord) {
+    int computeDistance(const std::string& dictionaryWord) override {
         int n = this->userInput.size();
         int m = dictionaryWord.size(); 
         int rows = n + 1;

@@ -2,7 +2,9 @@
 #include <string>
 #include <algorithm>
 
-class Model3 {
+#include "model.h"
+
+class Model3 : public IModel {
 private:
     std::string userInput;
     std::vector<int> grid;
@@ -19,7 +21,7 @@ public:
         }
     }
     
-    int computeDistance(const std::string& dictionaryWord) {
+    int computeDistance(const std::string& dictionaryWord) override {
         int n = this->userInput.size();
         int m = dictionaryWord.size(); 
         int cols = n + 1;
