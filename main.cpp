@@ -6,13 +6,12 @@
 #include <unistd.h>
 
 #include "data/dictionary.h"
+#include "data/constants.h"
+
 #include "models/LevenshteinModel.h"
 #include "models/storage/naiveMatrix.h"
 #include "models/storage/flattenedMatrix.h"
 #include "models/storage/rollingMatrix.h"
-
-constexpr int modelCount = 3;
-constexpr int defaultModel = 3;
 
 int validateModel(const char* str) {
     std::string s(str);
@@ -21,7 +20,7 @@ int validateModel(const char* str) {
     }
 
     int v = std::stoi(s);
-    if (!v || v > modelCount) {
+    if (!v || v > Constants::modelCount) {
         throw std::out_of_range("Model out of range");
     }
 
@@ -80,7 +79,7 @@ std::unique_ptr<IGridStorage> selectStorage(int model, int inputSize, int wordSi
 }
 
 int main(int argc, char* argv[]) {
-    int model = defaultModel;
+    int model = Constants::defaultModel;
 
     if (validateArgument(argc, argv, model) != EXIT_SUCCESS) {
         return EXIT_FAILURE;
