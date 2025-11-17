@@ -9,16 +9,18 @@ if(WIN32)
 endif()
 
 set(SOURCES
-    src/main.cpp
-    
-    models/model1.cpp
-    models/model2.cpp
-    models/model3.cpp
+    main.cpp
+
+    models/LevenshteinModel.cpp
+
+    models/storage/naiveMatrix.cpp
+    models/storage/flattenedMatrix.cpp
+    models/storage/rollingMatrix.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE 
-    src
     data
     models
+    models/storage
 )

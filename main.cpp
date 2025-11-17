@@ -5,13 +5,11 @@
 #include <memory>
 #include <unistd.h>
 
-#include "../data/dictionary.h"
-#include "../models/model.h"
-
-// super lazy XD
-#include "../models/model1.cpp"
-#include "../models/model2.cpp"
-#include "../models/model3.cpp"
+#include "data/dictionary.h"
+#include "models/LevenshteinModel.h"
+#include "models/storage/naiveMatrix.h"
+#include "models/storage/flattenedMatrix.h"
+#include "models/storage/rollingMatrix.h"
 
 constexpr int modelCount = 3;
 constexpr int defaultModel = 3;
@@ -56,26 +54,33 @@ int validateArgument(int argc, char* argv[], int& model) {
     return EXIT_SUCCESS;
 }
 
-void assignModel(int model, std::unique_ptr<IModel>& ldist, std::string& inputString) {
-    switch(model) {
-        case 1:
-            ldist = std::make_unique<Model1>(inputString);
-            break;
-        case 2:
-            ldist = std::make_unique<Model2>(inputString);
-            break;
-        case 3:
-            ldist = std::make_unique<Model3>(inputString);
-            break;
+std::unique_ptr<IGridStorage> selectStorage(int model, int inputSize, int wordSize) {
+    switch (model) {
+        case 1: {
+            auto storage = std::make_unique<NaiveMatrix>();
+            storage->init(inputSize + 1, wordSize + 1);
+            return storage;
+        }
+
+        case 2: {
+            auto storage = std::make_unique<FlattenedMatrix>();
+            storage->init(inputSize + 1, wordSize + 1);
+            return storage;
+        }
+
+        case 3: {
+            auto storage = std::make_unique<RollingMatrix>();
+            storage->init(inputSize + 1, wordSize + 1);
+            return storage;
+        }
+
         default:
-            std::cerr << "Something went wrong...\n";
-            break;
+            throw std::invalid_argument("Invalid storage model");
     }
 }
 
 int main(int argc, char* argv[]) {
     int model = defaultModel;
-    std::unique_ptr<IModel> ldist;
 
     if (validateArgument(argc, argv, model) != EXIT_SUCCESS) {
         return EXIT_FAILURE;
@@ -85,7 +90,9 @@ int main(int argc, char* argv[]) {
     std::cout << "What do you want to search?\n";
     std::cin >> inputString;
 
-    assignModel(model, ldist, inputString);
+    std::unique_ptr<IGridStorage> grid = selectStorage(model, inputString.size(), 10);
+    LevenshteinModel ldist(inputString, *grid);
+
     auto startTime = std::chrono::high_resolution_clock::now();
     
     // O(nlogn)
@@ -99,7 +106,7 @@ int main(int argc, char* argv[]) {
     std::string closestWord;
     
     for (const std::string& word : dictionary) {
-        int currentDistance = ldist->computeDistance(word);
+        int currentDistance = ldist.computeDistance(word);
         
         if (minDistance > currentDistance) {
             minDistance = currentDistance;
