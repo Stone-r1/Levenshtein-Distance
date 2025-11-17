@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+// CONDITION: It ALWAYS must be sorted
 const std::vector<std::string> dictionary {
     "afraid",
     "anger",

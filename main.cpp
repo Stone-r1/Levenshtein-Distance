@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
     std::cin >> inputString;
 
     std::unique_ptr<IGridStorage> grid = selectStorage(model, inputString.size(), 10);
-    LevenshteinModel ldist(inputString, *grid);
+    LevenshteinModel ldist(inputString, *grid, Constants::allowedDistance);
 
     auto startTime = std::chrono::high_resolution_clock::now();
     
@@ -116,6 +116,11 @@ int main(int argc, char* argv[]) {
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = endTime - startTime;
     
+    if (minDistance == Constants::allowedDistance) {
+        std::cout << "No matching string was found in the dictionary...\n";
+        return 0;
+    }
+
     std::cout << "The minimum distance is between " << inputString << " and " << closestWord << " and it equals to: " << minDistance << '\n';
 
     std::cout << "Time taken to compute distances: " << duration.count() << " ms\n";

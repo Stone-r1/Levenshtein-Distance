@@ -10,9 +10,10 @@ class LevenshteinModel : public IModel {
 private: 
     std::string userInput;
     IGridStorage& grid;
+    int allowedDistance;
 
 public:
-    LevenshteinModel(const std::string& userInput, IGridStorage& grid);
+    LevenshteinModel(const std::string& userInput, IGridStorage& grid, int allowedDistance);
     int computeDistance(const std::string& dictionaryWord) override;
 };
 
